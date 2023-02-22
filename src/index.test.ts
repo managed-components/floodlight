@@ -3,14 +3,14 @@ import { getRequestUrl } from '.'
 
 describe('Floodlight MC sends request to the correct url', () => {
   it('Produces url with the correct query params', () => {
-    const searchParams = new URLSearchParams();
+    const searchParams = new URLSearchParams()
     const event = {
       type: 'pageview',
-      payload: { 
+      payload: {
         timestamp: 1670502437,
         groupTag: '111',
         activityTag: '222',
-        u1: 'bbb' 
+        u1: 'bbb',
       },
       name: undefined,
       client: {
@@ -26,26 +26,27 @@ describe('Floodlight MC sends request to the correct url', () => {
           pathname: '/',
           search: '',
           searchParams,
-          hash: ''
+          hash: '',
         },
         title: 'Zaraz "Test" /t Page',
         timestamp: 1670502437,
-        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
+        userAgent:
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
         language: 'en-GB',
         referer: '',
         ip: '127.0.0.1',
         emitter: 'browser',
       },
-    };
-    const settings: ComponentSettings = { advertiserId: '54321' };
+    }
+    const settings: ComponentSettings = { advertiserId: '54321' }
 
-    const [ base, ...params ] = getRequestUrl(settings, event.payload).split(';');
-    const urlString = base + '?' + params.join('&').slice(0, -1);
+    const [base, ...params] = getRequestUrl(settings, event.payload).split(';')
+    const urlString = base + '?' + params.join('&').slice(0, -1)
     let url: URL
     try {
       url = new URL(urlString)
     } catch {
-      return false;
+      return false
     }
     expect(url.origin).toEqual('https://ad.doubleclick.net')
     expect(url.pathname).toEqual('/activity')
