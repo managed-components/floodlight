@@ -1,7 +1,7 @@
 {
   "name": "Floodlight",
   "namespace": "floodlight",
-  "description": "Floodlight 4 Managed Component",
+  "description": "Floodlight Managed Component",
   "icon": "assets/icon.png",
   "categories": ["Analytics"],
   "provides": ["events"],
