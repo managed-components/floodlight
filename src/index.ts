@@ -1,4 +1,6 @@
 import { ComponentSettings, Manager, MCEvent } from '@managed-components/types'
+import { setGclDcCookie } from './utils'
+import { Client } from '@managed-components/types'
 
 const getUrlString = (query: { [k: string]: string }) => {
   return Object.entries(query)
@@ -8,11 +10,16 @@ const getUrlString = (query: { [k: string]: string }) => {
 
 export const getRequestUrl = (
   settings: ComponentSettings,
-  payload: MCEvent['payload']
+  payload: MCEvent['payload'],
+  client: Client
 ) => {
   const { advertiserId } = settings
   const { timestamp, groupTag, activityTag, ...customFields } = payload
   const baseURL = 'https://ad.doubleclick.net/activity;'
+
+  if (client.get('_gcl_dc')) {
+    customFields.gcldc = client.get('_gcl_dc')?.split('.').pop()
+  }
 
   const query = {
     src: advertiserId,
@@ -29,7 +36,9 @@ export const getRequestUrl = (
 
 const sendEvent = (settings: ComponentSettings) => async (event: MCEvent) => {
   const { client, payload } = event
-  client.fetch(getRequestUrl(settings, payload), {
+  // set the _gcl_aw cookie if _gl or gclid query params exists
+  setGclDcCookie(client)
+  client.fetch(getRequestUrl(settings, payload, client), {
     credentials: 'include',
     keepalive: true,
     mode: 'no-cors',
